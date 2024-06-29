@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Event Countdown Timer</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        text-align: center;
+        background-color: #f4f4f4;
+      }
+      
+      h1 {
+        color: #333;
+      }
+      
+      li {
+        border: 2px solid #ccc; /* Add rounded border */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add a subtle shadow effect */
+        padding: 5px; /* Add some padding to the list item */
+        margin-bottom: 10px; /* Add margin bottom to the list item */
+        background-color: whitesmoke;
+      }
+      
+      #timer {
+        width: 100%;
+        justify-content: center;
+        align-items: center;
+        position: fixed;
+        top: 0%;
+        left: 50%;
+        transform: translate(-50%, 0%);
+        display: flex;
+        background-color: #fff;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        margin: 0 auto;
+        max-width: 100%;
+        z-index: 10;
+        height: 5rem;
+        gap: 5rem;
+      }
+      
+      #countdown {
+        font-size: 3.5rem;
+        font-weight: bold;
+        color: #e44d26;
+      }
+      #countdown-hidden {
+        display: none; /* added line */
+      }
+      
+      #event {
+        font-size: 34px;
+        font-weight: bold;
+        color: #221d1c;
+      }
+      
+      .comment-container {
+        padding-top: 10rem; /* Add padding to the comment container */
+        margin: auto;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 40%;
+      }
+      .comments {
+        list-style: none; /* remove list decorations */
+        margin: 0; /* remove margin*/
+        padding: 0; /* remove padding*/
+        display: block; /* make it a block container */
+        text-align: left; /* align the elements to the left */
+        line-height: 2; /* add line height to make the text more readable */
+      }
+      
+      .comments .username {
+        font-weight: bold; /* Add bold text for the username */
+        color: #333; /* Add a subtle gray color for the username */
+      }
+      
+      .comments .comment {
+        color: #ff0000; /* Change the text color to bright red */
+      }
+      
+      .like-container {
+        display: flex;
+        flex-direction: row; /* change the flex direction to column */
+        align-items: center;
+        justify-content: center; /* center the like button vertically */
+      }
+      
+      .like-container .like-btn {
+        margin-right: 20px; /* add right margin to the like button */
+      }
+      
+      .spa-container {
+        position: relative;
+      }
+      
+      .background {
+        background-image: url('https://i.ibb.co/Q8Zm18v/bg.jpg'); /* no change */
+        background-repeat: no-repeat;
+        background-size: cover; /* Add this line to set the background image size to cover the entire page */
+      
+        position: absolute; /* no change */
+        height: 100vh; /* no change */
+        width: 100vw; /* no change */
+        background-color: red; /* no change */
+        z-index: -10; /* no change */
+      }
+      
+      .background-overlay {
+        position: absolute;
+        height: 100vh;
+        width: 100vw;
+        z-index: -9;
+        background-color: black;
+        opacity: 0.7;
+      }
+      
+      .comment-form {
+        color: #ccc;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+      
+      .add-comment-btn {
+        padding: 1rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="spa-container">
+      <div class="background-overlay"></div>
+      <div class="background"></div>
+
+      <!--                                      ===========================
+           Section: Timer
+           ===========================                                      -->
+      <div id="timer">
+        <h3 id="event">{{ data.name }}</h3>
+        <div id="countdown-hidden">{{ data.days|stringformat:'02d' }} : {{ data.hours|stringformat:'02d' }}</div>
+        <div id="countdown">{{ data.days|stringformat:'02d' }} Days : {{ data.hours|stringformat:'02d' }} Hours</div>
+      </div>
+
+      <!--                                     ===========================
+           /End of Section: Timer
+           ===========================                                     -->
+
+      <!--                                    ===========================
+                Section: Comment
+                ===========================                                    -->
+      <div class="comment-container">
+        <ul class="comments">
+          {% for comment in data.comments %}
+            <li>
+              <span class="username">{{ comment.username }}</span> said : <span class="comment">{{ comment.comment }}</span> : {{ comment.commented_at }} |<div class="like-container">
+                <button class="like-btn" onclick="likeComment({{ comment.id }})">like</button>
+                <p id="likes-{{ comment.id }}">{{ comment.likes_count }}</p>
+              </div>
+            </li>
+          {% endfor %}
+          <form class="comment-form" action="" method="POST">
+            {% csrf_token %}
+            {{ data.form.as_p }}
+            <button class="add-comment-btn" type="submit">Add Comment</button>
+          </form>
+        </ul>
+      </div>
+      <!--                                   ===========================
+           /End of Section: Comment
+           ===========================                                   -->
+    </div>
+
+    <script>
+      function likeComment(commentId) {
+        fetch(`/like_comment/${commentId}/`, {
+          method: 'POST',
+          headers: {
+            'X-CSRFToken': '{{ csrf_token }}'
+          }
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            document.getElementById(`likes-${commentId}`).innerText = data.likes
+          })
+      }
+      // Function to update the countdown timer
+      function updateTimer() {
+        let days = parseInt(document.getElementById('countdown-hidden').textContent.split(':')[0])
+        let hours = parseInt(document.getElementById('countdown-hidden').textContent.split(':')[1])
+      
+        if (hours > 23) {
+          days++
+          hours = 0
+        }
+      
+        // Update the timer display
+        document.getElementById('countdown').textContent = (days < 10 ? '0' : '') + days + ' Days : ' + (hours < 10 ? '0' : '') + hours + ' Hours'
+      }
+      
+      // Update the timer every second
+      setInterval(updateTimer, 60000)
+    </script>
+  </body>
+</html>
