@@ -33,31 +33,27 @@
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        background-color: #fff;
-        border-radius: 150px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        padding: 40px;
         margin: 0 auto;
-        max-width: 100%;
+        height: auto;
+        width: 100%;
         z-index: 10;
-        height: 15rem;
-        width: 50%;
-        gap: 5rem;
+        gap: 2rem;
       }
       
       #countdown {
-        font-size: 5rem;
+        font-size: 10rem;
         font-weight: bold;
-        color: #e44d26;
+        color: #fff;
+        text-shadow: 2px 2px 5px rgba(0, 0, 0, 1);
       }
       #countdown-hidden {
         display: none;
       }
       
       #event {
-        font-size: 2rem;
+        font-size: 3rem;
         font-weight: bold;
-        color: #221d1c;
+        color: #fff;
       }
       
       .comment-container {
@@ -151,22 +147,22 @@
       <div class="background-overlay"></div>
       <div class="background"></div>
 
-      <!--                                                                                      ===========================
+      <!--                                                                                                            ===========================
            Section: Timer
-           ===========================                                                                                      -->
+           ===========================                                                                                                            -->
       <div class="container" id="timer">
         <h3 id="event">{{ data.name }}</h3>
         <div id="countdown-hidden">{{ data.days|stringformat:'02d' }}</div>
         <div id="countdown">දින {{ data.days|stringformat:'02d' }}යි</div>
       </div>
 
-      <!--                                                                                     ===========================
+      <!--                                                                                                           ===========================
            /End of Section: Timer
-           ===========================                                                                                     -->
+           ===========================                                                                                                           -->
 
-      <!--                                                                                    ===========================
+      <!--                                                                                                          ===========================
                 Section: Comment
-                ===========================                                                                                    -->
+                ===========================                                                                                                          -->
       {% comment %} <div class="comment-container">
         <ul class="comments">
           {% for comment in data.comments %}
@@ -184,9 +180,9 @@
           </form>
         </ul>
       </div> {% endcomment %}
-      <!--                                                                                   ===========================
+      <!--                                                                                                         ===========================
            /End of Section: Comment
-           ===========================                                                                                   -->
+           ===========================                                                                                                         -->
     </div>
 
     <script>
