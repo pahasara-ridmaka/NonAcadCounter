@@ -10,6 +10,7 @@
         font-family: Arial, sans-serif;
         text-align: center;
         background-color: #f4f4f4;
+        position: relative;
       }
       
       h1 {
@@ -24,37 +25,37 @@
         background-color: whitesmoke;
       }
       
+      /*SECTION - timer */
       #timer {
-        width: 100%;
         justify-content: center;
         align-items: center;
-        position: fixed;
-        top: 0%;
+        position: absolute;
+        top: 50%;
         left: 50%;
-        transform: translate(-50%, 0%);
-        display: flex;
+        transform: translate(-50%, -50%);
         background-color: #fff;
-        border-radius: 5px;
+        border-radius: 150px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        padding: 20px;
+        padding: 40px;
         margin: 0 auto;
         max-width: 100%;
         z-index: 10;
-        height: 5rem;
+        height: 15rem;
+        width: 50%;
         gap: 5rem;
       }
       
       #countdown {
-        font-size: 3.5rem;
+        font-size: 5rem;
         font-weight: bold;
         color: #e44d26;
       }
       #countdown-hidden {
-        display: none; /* added line */
+        display: none;
       }
       
       #event {
-        font-size: 34px;
+        font-size: 2rem;
         font-weight: bold;
         color: #221d1c;
       }
@@ -62,10 +63,12 @@
       .comment-container {
         padding-top: 10rem; /* Add padding to the comment container */
         margin: auto;
+      
         display: flex;
         justify-content: center;
         align-items: center;
         width: 40%;
+        overflow: auto;
       }
       .comments {
         list-style: none; /* remove list decorations */
@@ -98,6 +101,9 @@
       
       .spa-container {
         position: relative;
+        width: 100vw;
+        height: 100vh;
+        text-decoration: none;
       }
       
       .background {
@@ -132,6 +138,12 @@
       .add-comment-btn {
         padding: 1rem;
       }
+      
+      .container {
+        height: 100vh;
+      
+        overflow: auto;
+      }
     </style>
   </head>
   <body>
@@ -139,23 +151,23 @@
       <div class="background-overlay"></div>
       <div class="background"></div>
 
-      <!--                                      ===========================
+      <!--                                                                                      ===========================
            Section: Timer
-           ===========================                                      -->
-      <div id="timer">
+           ===========================                                                                                      -->
+      <div class="container" id="timer">
         <h3 id="event">{{ data.name }}</h3>
-        <div id="countdown-hidden">{{ data.days|stringformat:'02d' }} : {{ data.hours|stringformat:'02d' }}</div>
-        <div id="countdown">{{ data.days|stringformat:'02d' }} Days : {{ data.hours|stringformat:'02d' }} Hours</div>
+        <div id="countdown-hidden">{{ data.days|stringformat:'02d' }}</div>
+        <div id="countdown">දින {{ data.days|stringformat:'02d' }}යි</div>
       </div>
 
-      <!--                                     ===========================
+      <!--                                                                                     ===========================
            /End of Section: Timer
-           ===========================                                     -->
+           ===========================                                                                                     -->
 
-      <!--                                    ===========================
+      <!--                                                                                    ===========================
                 Section: Comment
-                ===========================                                    -->
-      <div class="comment-container">
+                ===========================                                                                                    -->
+      {% comment %} <div class="comment-container">
         <ul class="comments">
           {% for comment in data.comments %}
             <li>
@@ -171,10 +183,10 @@
             <button class="add-comment-btn" type="submit">Add Comment</button>
           </form>
         </ul>
-      </div>
-      <!--                                   ===========================
+      </div> {% endcomment %}
+      <!--                                                                                   ===========================
            /End of Section: Comment
-           ===========================                                   -->
+           ===========================                                                                                   -->
     </div>
 
     <script>
@@ -193,7 +205,6 @@
       // Function to update the countdown timer
       function updateTimer() {
         let days = parseInt(document.getElementById('countdown-hidden').textContent.split(':')[0])
-        let hours = parseInt(document.getElementById('countdown-hidden').textContent.split(':')[1])
       
         if (hours > 23) {
           days++
@@ -201,7 +212,7 @@
         }
       
         // Update the timer display
-        document.getElementById('countdown').textContent = (days < 10 ? '0' : '') + days + ' Days : ' + (hours < 10 ? '0' : '') + hours + ' Hours'
+        document.getElementById('countdown').textContent = (days < 10 ? '0' : '') + 'දින ' + Days + 'යි'
       }
       
       // Update the timer every second
